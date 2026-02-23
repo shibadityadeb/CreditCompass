@@ -71,6 +71,8 @@ def index():
 
 @app.route('/health', methods=['GET'])
 def health_check():
+    if model is None:
+        load_model()
     return jsonify({
         'status': 'healthy',
         'model_loaded': model is not None
@@ -79,6 +81,9 @@ def health_check():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
+        if model is None:
+            load_model()
+        
         if model is None:
             return jsonify({
                 'success': False,
@@ -128,7 +133,7 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return jsonify({'success': False, 'error': 'Internal server error'}), 500
-load_model()
+# Model will be loaded lazily on first request
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
