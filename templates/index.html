@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Intelligent Credit Risk Scoring System - Assess borrower creditworthiness with ML">
+    <title>CreditCompass - Intelligent Credit Risk Scoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="logo-text">CreditCompass</span>
+            </div>
+            <nav class="nav">
+                <span class="nav-status" id="systemStatus">
+                    <span class="status-dot"></span>
+                    System Online
+                </span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">Intelligent Credit Risk Assessment</h1>
+                <p class="hero-subtitle">Powered by advanced machine learning to evaluate borrower creditworthiness with precision and speed.</p>
+            </section>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard">
+                <!-- Form Card -->
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M20 8V14M17 11H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Credit Application
+                        </h2>
+                        <p class="card-description">Enter borrower financial details for risk assessment</p>
+                    </div>
+                    
+                    <form id="creditForm" class="form">
+                        <!-- Financial Profile Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Financial Profile</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="rev_util" class="form-label">
+                                        Revolving Utilization
+                                        <span class="tooltip" data-tip="Percentage of revolving credit currently being used">?</span>
+                                    </label>
+                                    <input type="number" id="rev_util" name="rev_util" class="form-input" 
+                                           min="0" max="10" step="0.01" value="0.5" required>
+                                    <span class="form-hint">Range: 0.0 - 10.0</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="debt_ratio" class="form-label">
+                                        Debt Ratio
+                                        <span class="tooltip" data-tip="Monthly debt payments divided by monthly income">?</span>
+                                    </label>
+                                    <input type="number" id="debt_ratio" name="debt_ratio" class="form-input" 
+                                           min="0" max="100" step="0.01" value="0.3" required>
+                                    <span class="form-hint">Range: 0.0 - 100.0</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="monthly_inc" class="form-label">
+                                        Monthly Income ($)
+                                        <span class="tooltip" data-tip="Gross monthly income in dollars">?</span>
+                                    </label>
+                                    <input type="number" id="monthly_inc" name="monthly_inc" class="form-input" 
+                                           min="0" max="10000000" step="1" value="5000" required>
+                                    <span class="form-hint">Gross income</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="open_credit" class="form-label">
+                                        Open Credit Lines
+                                        <span class="tooltip" data-tip="Number of open loans and credit cards">?</span>
+                                    </label>
+                                    <input type="number" id="open_credit" name="open_credit" class="form-input" 
+                                           min="0" max="100" step="1" value="3" required>
+                                    <span class="form-hint">Active accounts</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="real_estate" class="form-label">
+                                        Real Estate Loans
+                                        <span class="tooltip" data-tip="Number of mortgage and real estate loans">?</span>
+                                    </label>
+                                    <input type="number" id="real_estate" name="real_estate" class="form-input" 
+                                           min="0" max="50" step="1" value="0" required>
+                                    <span class="form-hint">Mortgages/HELOCs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Personal Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="age" class="form-label">
+                                        Age
+                                        <span class="tooltip" data-tip="Borrower's age in years">?</span>
+                                    </label>
+                                    <input type="number" id="age" name="age" class="form-input" 
+                                           min="18" max="120" step="1" value="35" required>
+                                    <span class="form-hint">18 - 120 years</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="dependents" class="form-label">
+                                        Dependents
+                                        <span class="tooltip" data-tip="Number of dependents excluding self">?</span>
+                                    </label>
+                                    <input type="number" id="dependents" name="dependents" class="form-input" 
+                                           min="0" max="20" step="1" value="0" required>
+                                    <span class="form-hint">Family members</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment History Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Payment History</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="late_30_59" class="form-label">
+                                        Late 30-59 Days
+                                        <span class="tooltip" data-tip="Number of times 30-59 days past due in last 2 years">?</span>
+                                    </label>
+                                    <input type="number" id="late_30_59" name="late_30_59" class="form-input" 
+                                           min="0" max="50" step="1" value="0" required>
+                                    <span class="form-hint">Past 2 years</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="late_60_89" class="form-label">
+                                        Late 60-89 Days
+                                        <span class="tooltip" data-tip="Number of times 60-89 days past due in last 2 years">?</span>
+                                    </label>
+                                    <input type="number" id="late_60_89" name="late_60_89" class="form-input" 
+                                           min="0" max="50" step="1" value="0" required>
+                                    <span class="form-hint">Past 2 years</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="late_90" class="form-label">
+                                        Late 90+ Days
+                                        <span class="tooltip" data-tip="Number of times 90+ days past due in last 2 years">?</span>
+                                    </label>
+                                    <input type="number" id="late_90" name="late_90" class="form-input" 
+                                           min="0" max="50" step="1" value="0" required>
+                                    <span class="form-hint">Past 2 years</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <span class="btn-text">Analyze Credit Risk</span>
+                                <span class="btn-loader">
+                                    <svg class="spinner" viewBox="0 0 24 24">
+                                        <circle class="spinner-track" cx="12" cy="12" r="10" fill="none" stroke-width="3"/>
+                                        <circle class="spinner-head" cx="12" cy="12" r="10" fill="none" stroke-width="3"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <button type="reset" class="btn btn-secondary" id="resetBtn">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Result Card -->
+                <div class="card result-card" id="resultCard">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Risk Assessment
+                        </h2>
+                        <p class="card-description">ML-powered credit risk analysis results</p>
+                    </div>
+
+                    <!-- Initial State -->
+                    <div class="result-placeholder" id="resultPlaceholder">
+                        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <p class="placeholder-text">Submit the application form to receive risk assessment results</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="result-loading hidden" id="resultLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                        </div>
+                        <p class="loading-text">Analyzing credit profile...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div class="result-error hidden" id="resultError">
+                        <svg class="error-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <h3 class="error-title">Assessment Failed</h3>
+                        <p class="error-message" id="errorMessage"></p>
+                        <button class="btn btn-secondary btn-small" id="retryBtn">Try Again</button>
+                    </div>
+
+                    <!-- Success State -->
+                    <div class="result-success hidden" id="resultSuccess">
+                        <!-- Risk Indicator -->
+                        <div class="risk-indicator" id="riskIndicator">
+                            <div class="risk-gauge">
+                                <svg class="gauge-svg" viewBox="0 0 200 100">
+                                    <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="20"/>
+                                    <path class="gauge-fill" id="gaugeFill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="20"/>
+                                </svg>
+                                <div class="gauge-center">
+                                    <span class="gauge-value" id="gaugeValue">0%</span>
+                                    <span class="gauge-label">Default Probability</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Badge -->
+                        <div class="risk-badge" id="riskBadge">
+                            <span class="risk-level" id="riskLevel">Low Risk</span>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Assessment Message</span>
+                                <p class="detail-value" id="resultMessage"></p>
+                            </div>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Risk Classification</span>
+                                    <span class="detail-value" id="riskClassification"></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Confidence</span>
+                                    <span class="detail-value" id="confidenceLevel"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="result-actions">
+                            <button class="btn btn-primary btn-small" id="newAssessmentBtn">New Assessment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <section class="info-section">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon info-icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="info-title">ML-Powered</h3>
+                        <p class="info-text">XGBoost model trained on historical credit data for accurate predictions</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon info-icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="info-title">Instant Results</h3>
+                        <p class="info-text">Get real-time credit risk assessment in milliseconds</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon info-icon-purple">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="info-title">Secure</h3>
+                        <p class="info-text">Data validation and secure processing for reliable assessments</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 CreditCompass. Intelligent Credit Risk Scoring System.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
