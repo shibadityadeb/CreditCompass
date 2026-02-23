@@ -1,5 +1,17 @@
-streamlit
-pandas
-scikit-learn
-xgboost
-joblib
+# CreditCompass - Production Requirements
+# Core Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# ML & Data Processing
+pandas>=2.0.0
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+joblib>=1.3.0
+numpy>=1.24.0
+
+# Production Server
+gunicorn>=21.0.0
+
+# Security
+python-dotenv>=1.0.0
