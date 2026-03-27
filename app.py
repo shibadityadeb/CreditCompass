@@ -111,6 +111,8 @@ def index():
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint for deployment monitoring."""
+    if model is None:
+        load_model()
     return jsonify({
         'status': 'healthy',
         'model_loaded': model is not None
@@ -147,6 +149,9 @@ def predict():
     """
     try:
         # Check if model is loaded
+        if model is None:
+            load_model()
+
         if model is None:
             return jsonify({
                 'success': False,
@@ -217,7 +222,7 @@ def internal_error(error):
 
 
 # Initialize model on startup
-load_model()
+# Model will be loaded lazily on first request
 
 
 if __name__ == '__main__':
