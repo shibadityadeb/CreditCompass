@@ -85,6 +85,9 @@ def predict():
             load_model()
         
         if model is None:
+            load_model()
+
+        if model is None:
             return jsonify({
                 'success': False,
                 'error': 'Model not loaded. Please contact administrator.'
