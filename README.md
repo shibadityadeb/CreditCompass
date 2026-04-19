@@ -6,6 +6,16 @@ A college major project: ML credit risk scoring (Milestone 1) + Agentic AI lendi
 
 **Project Report (PDF):** [reports/CreditCompass.pdf](reports/CreditCompass.pdf)
 
+## Hosted Website Screenshots
+
+![CreditCompass Hosted App Screenshot 1](https://github.com/user-attachments/assets/037a94c2-bc49-4707-87a9-434a618f0851)
+
+![CreditCompass Hosted App Screenshot 2](https://github.com/user-attachments/assets/02c441b0-e429-429d-8e16-caebe621b9f7)
+
+## ROC Curve Comparison (Model Performance)
+
+<!-- Add the third ROC curve image URL here once shared -->
+
 ---
 
 ## How the Data Flows
