@@ -1,1 +1,1 @@
-# Model package for CreditCompass
+# Model package

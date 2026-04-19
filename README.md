@@ -1,10 +1,100 @@
-# CreditCompass — Intelligent Credit Risk Scoring & Agentic Lending Decision Support
+# CreditCompass — AI Credit Risk & Lending Decision Platform
 
-A college major project demonstrating ML-based credit risk scoring (Milestone 1) and an Agentic AI lending decision assistant (Milestone 2) built with Flask, LangGraph, and OpenRouter.
+A college major project: ML credit risk scoring (Milestone 1) + Agentic AI lending decision support (Milestone 2).
 
-![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
-![Flask](https://img.shields.io/badge/Flask-3.0+-green.svg)
-![LangGraph](https://img.shields.io/badge/LangGraph-0.2+-purple.svg)
+**Stack:** Flask · XGBoost · LangGraph · OpenRouter (Mistral-7B free) · Tailwind CSS · Render
+
+---
+
+## How the Data Flows
+
+### Milestone 1 — `/predict` (quick ML scoring)
+
+```
+User fills form
+       │
+       ▼
+Browser (app.js)  ──POST /predict──►  Flask (app.py)
+                                             │
+                                             ▼
+                                    validate_input()
+                                             │
+                                             ▼
+                                    xgb_credit_model.pkl
+                                    model.predict_proba()
+                                             │
+                                             ▼
+                                    { probability, risk_level,
+                                      risk_class, message }
+                                             │
+       ◄──────────────────────────────────────┘
+       │
+       ▼
+Display gauge + risk badge
+(animates from 0 → probability%)
+```
+
+---
+
+### Milestone 2 — `/assess` (agentic AI decision support)
+
+```
+User clicks "Get Full AI Lending Assessment"
+       │
+       ▼
+Browser (app.js)  ──POST /assess──►  Flask (app.py)
+                                             │
+                                     sanitize fields
+                                     (None for missing)
+                                             │
+                                             ▼
+                               backend/agent.py → run_assessment()
+                                             │
+                         ┌───────────────────┴──────────────────────┐
+                         │        LangGraph StateGraph               │
+                         │                                           │
+                         │  Node 1: check_data_node                  │
+                         │    → scans 10 fields for None             │
+                         │    → returns missing_fields: [...]        │
+                         │              │                            │
+                         │              ▼                            │
+                         │  Node 2: predict_node                     │
+                         │    → model/predictor.py                   │
+                         │    → fills missing with dataset medians   │
+                         │    → returns ml_prediction dict           │
+                         │              │                            │
+                         │              ▼                            │
+                         │  Node 3: load_rules_node                  │
+                         │    → reads data/lending_rules.json        │
+                         │    → returns full rules dict              │
+                         │              │                            │
+                         │              ▼                            │
+                         │  Node 4: generate_recommendation_node     │
+                         │    → builds prompt from:                  │
+                         │       • borrower profile                  │
+                         │       • ML prediction                     │
+                         │       • missing fields note               │
+                         │       • lending rules                     │
+                         │    → reads prompts/lending_prompt.txt     │
+                         │    → calls OpenRouter API (Mistral-7B)    │
+                         │    → if API fails → fallback in           │
+                         │       utils/helpers.py                    │
+                         │    → parse_llm_response() extracts        │
+                         │       7 structured sections               │
+                         └───────────────────────────────────────────┘
+                                             │
+                                             ▼
+                              { ml_prediction, recommendation,
+                                missing_fields }
+                                             │
+       ◄─────────────────────────────────────┘
+       │
+       ▼
+Display full AI report:
+  • Decision banner (APPROVE / REVIEW / REJECT)
+  • Missing data alert (if applicable)
+  • 6 section cards rendered from recommendation dict
+```
 
 ---
 
@@ -13,111 +103,89 @@ A college major project demonstrating ML-based credit risk scoring (Milestone 1)
 ```
 CreditCompass/
 │
-├── app.py                      # Main Flask app — all API endpoints
+├── app.py                      # Flask app — /predict + /assess endpoints
 │
 ├── backend/
-│   ├── __init__.py
-│   └── agent.py                # LangGraph 4-node agentic workflow (Milestone 2)
+│   └── agent.py                # LangGraph 4-node workflow (Milestone 2)
 │
 ├── model/
-│   ├── __init__.py
-│   └── predictor.py            # Shared XGBoost model wrapper
+│   └── predictor.py            # XGBoost model wrapper (shared by both endpoints)
 │
 ├── data/
-│   └── lending_rules.json      # Local lending guidelines & regulations
+│   └── lending_rules.json      # Local lending guidelines + 6 regulations
 │
 ├── prompts/
-│   └── lending_prompt.txt      # LLM prompt template for AI assessment
+│   └── lending_prompt.txt      # LLM prompt template (loaded by Node 4)
 │
 ├── utils/
-│   ├── __init__.py
-│   └── helpers.py              # Response parser, prompt builders, fallback logic
+│   └── helpers.py              # parse_llm_response(), prompt builders,
+│                               # generate_fallback_recommendation()
 │
 ├── templates/
-│   └── index.html              # Single-page frontend (Jinja2)
+│   └── index.html              # Frontend (Tailwind CSS CDN + custom CSS)
 │
 ├── static/
-│   ├── css/styles.css          # Responsive UI styles
-│   └── js/app.js               # Frontend JS — ML + AI assessment handlers
+│   ├── css/styles.css          # Custom animations, gauge, spinner, risk badge
+│   └── js/app.js               # Two IIFE modules: M1 (/predict) + M2 (/assess)
 │
-├── xgb_credit_model.pkl        # Trained XGBoost model (Milestone 1)
-├── requirements.txt
-├── render.yaml                 # Render free-tier deployment config
-├── Procfile
-└── runtime.txt
+├── xgb_credit_model.pkl        # Trained XGBoost model binary
+├── requirements.txt            # Python dependencies
+├── render.yaml                 # Render free-tier deployment blueprint
+├── Procfile                    # gunicorn start command
+└── runtime.txt                 # python-3.11.0
 ```
-
----
-
-## Milestones
-
-### Milestone 1 — ML Credit Risk Scoring
-- XGBoost model trained on the Give Me Some Credit dataset
-- `POST /predict` endpoint returns probability of default + risk level
-- Clean web UI with animated gauge, risk badge, and detail cards
-
-### Milestone 2 — Agentic AI Lending Decision Support
-- **LangGraph workflow** with 4 sequential nodes:
-  1. `check_data` — detect missing fields
-  2. `predict` — run XGBoost model (supports partial input)
-  3. `load_rules` — load local `data/lending_rules.json`
-  4. `generate_recommendation` — call OpenRouter LLM, parse structured report
-- `POST /assess` endpoint returns a full structured lending assessment
-- **Missing data handling**: absent fields use dataset medians; report flags data gaps
-- **Fallback**: if OpenRouter API is unavailable, rule-based recommendation is used automatically
-- **Structured report sections**: Borrower Summary, Credit Risk Analysis, Lending Decision (APPROVE/REVIEW/REJECT), Decision Rationale, Risk Mitigation Suggestions, Regulatory References, Legal Disclaimer
 
 ---
 
 ## API Endpoints
 
-### `POST /predict` — Milestone 1
-Quick ML prediction.
+### `POST /predict` — Milestone 1 (all fields required)
 
 ```json
-// Request (all fields required)
+// Request
 {
-    "rev_util": 0.5,  "age": 35,      "late_30_59": 0,
-    "debt_ratio": 0.3, "monthly_inc": 5000, "open_credit": 3,
-    "late_90": 0,     "real_estate": 0,    "late_60_89": 0,
-    "dependents": 1
+  "rev_util": 0.5,   "age": 35,         "late_30_59": 0,
+  "debt_ratio": 0.3, "monthly_inc": 5000,"open_credit": 3,
+  "late_90": 0,      "real_estate": 0,   "late_60_89": 0,
+  "dependents": 1
 }
 
 // Response
 {
-    "success": true,
-    "risk_level": "Low Risk",
-    "risk_class": "low",
-    "probability": 0.3153,
-    "message": "Assessment complete. Low Risk detected with 31.53% default probability."
+  "success": true,
+  "risk_level": "Low Risk",
+  "risk_class": "low",
+  "probability": 0.3153,
+  "message": "Assessment complete. Low Risk detected with 31.53% default probability."
 }
 ```
 
-### `POST /assess` — Milestone 2
-Full AI lending assessment via LangGraph agent.
+### `POST /assess` — Milestone 2 (fields are optional — missing ones use defaults)
 
 ```json
-// Request (fields are optional — missing ones use defaults)
-{ "age": 45, "monthly_inc": 3000, "debt_ratio": 0.65, "late_90": 2 }
+// Request (partial example — missing fields handled gracefully)
+{ "age": 52, "monthly_inc": 3200, "debt_ratio": 0.68, "late_90": 2 }
 
 // Response
 {
-    "success": true,
-    "ml_prediction": {
-        "probability": 0.72, "probability_pct": 72.0,
-        "risk_level": "High Risk", "risk_class": "high",
-        "used_defaults": ["rev_util", "late_30_59", ...]
-    },
-    "recommendation": {
-        "borrower_summary": "...",
-        "credit_risk_analysis": "...",
-        "lending_decision": "REJECT",
-        "decision_rationale": "...",
-        "risk_mitigation_suggestions": "...",
-        "regulatory_references": "...",
-        "disclaimer": "..."
-    },
-    "missing_fields": ["rev_util", "late_30_59", ...]
+  "success": true,
+  "ml_prediction": {
+    "probability": 0.72,
+    "probability_pct": 72.0,
+    "risk_level": "High Risk",
+    "risk_class": "high",
+    "used_defaults": ["rev_util", "late_30_59", "open_credit", "real_estate", "late_60_89", "dependents"]
+  },
+  "recommendation": {
+    "borrower_summary":            "...",
+    "credit_risk_analysis":        "...",
+    "lending_decision":            "REJECT",
+    "decision_rationale":          "...",
+    "risk_mitigation_suggestions": "...",
+    "regulatory_references":       "...",
+    "disclaimer":                  "..."
+  },
+  "missing_fields": ["rev_util", "late_30_59", ...]
 }
 ```
 
@@ -128,81 +196,64 @@ Full AI lending assessment via LangGraph agent.
 
 ---
 
+## Feature Defaults (used when fields are missing in /assess)
+
+| Field | Default | Source |
+|-------|---------|--------|
+| `rev_util` | 0.154 | Dataset median |
+| `age` | 52 | Dataset median |
+| `late_30_59` | 0 | Dataset median |
+| `debt_ratio` | 0.336 | Dataset median |
+| `monthly_inc` | 5400.0 | Dataset median |
+| `open_credit` | 8 | Dataset median |
+| `late_90` | 0 | Dataset median |
+| `real_estate` | 1 | Dataset median |
+| `late_60_89` | 0 | Dataset median |
+| `dependents` | 0 | Dataset median |
+
+---
+
+## LangGraph Agent Nodes
+
+| Node | File | What it does |
+|------|------|-------------|
+| `check_data` | `backend/agent.py` | Scans input dict for None values → builds `missing_fields` list |
+| `predict` | `model/predictor.py` | Runs XGBoost; fills missing fields with medians |
+| `load_rules` | `data/lending_rules.json` | Loads risk thresholds, debt ratio bands, regulations |
+| `generate_recommendation` | `utils/helpers.py` + OpenRouter | Builds prompt → calls Mistral-7B → parses 7-section response |
+
+---
+
 ## Local Setup
 
 ```bash
-# 1. Clone & enter project
-git clone <repo-url>
+git clone <repo>
 cd "credit compasss"
 
-# 2. Create virtual environment
 python3 -m venv .venv
-source .venv/bin/activate    # macOS/Linux
-
-# 3. Install dependencies
+source .venv/bin/activate
 pip install -r requirements.txt
 
-# 4. Configure environment
-cp .env .env.local
 # Edit .env — set OPENROUTER_API_KEY (get free key at openrouter.ai)
+# Without key, falls back to rule-based assessment automatically
 
-# 5. Run
-python app.py
-# Open http://localhost:5000
+PORT=5001 python app.py
+# Open http://localhost:5001
 ```
 
-> **OpenRouter API key is optional.** Without it, the system uses a built-in rule-based fallback that still produces a complete structured report. The app works end-to-end without any external API.
+## Deploy on Render
+
+1. Push to GitHub
+2. Render Dashboard → New → Blueprint → connect repo (`render.yaml` auto-detected)
+3. Environment tab → add secret: `OPENROUTER_API_KEY`
+4. Deploy — start command: `gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 2`
 
 ---
 
-## Deployment on Render (Free)
+## Risk Thresholds
 
-1. Push code to GitHub
-2. Go to [Render Dashboard](https://dashboard.render.com) → **New → Blueprint**
-3. Connect your GitHub repo — Render detects `render.yaml` automatically
-4. In Render dashboard → Environment → add secret: `OPENROUTER_API_KEY`
-5. Deploy
-
-Start command (in `render.yaml`):
-```
-gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 2
-```
-
-**Or deploy via Dashboard:**
-1. Go to [Vercel](https://vercel.com)
-2. Click **Add New** → **Project**
-3. Import your GitHub repository
-4. Vercel auto-detects `vercel.json`
-5. Click **Deploy**
-
-> **Note**: Vercel free tier has 100GB bandwidth/month and 10-second function timeout.
-
-
-## Input Features
-
-| Field | Type | Range | Description |
-|-------|------|-------|-------------|
-| `rev_util` | float | 0–10 | Revolving credit utilization ratio |
-| `age` | int | 18–120 | Borrower's age in years |
-| `late_30_59` | int | 0–50 | Times 30–59 days late (past 2 yrs) |
-| `debt_ratio` | float | 0–100 | Debt-to-income ratio |
-| `monthly_inc` | float | 0–10M | Gross monthly income ($) |
-| `open_credit` | int | 0–100 | Number of open credit lines |
-| `late_90` | int | 0–50 | Times 90+ days late (past 2 yrs) |
-| `real_estate` | int | 0–50 | Real estate / mortgage loans |
-| `late_60_89` | int | 0–50 | Times 60–89 days late (past 2 yrs) |
-| `dependents` | int | 0–20 | Number of dependents |
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Backend | Flask 3, Python 3.11 |
-| ML Model | XGBoost (trained, `.pkl`) |
-| Agent Framework | LangGraph |
-| LLM | OpenRouter (Mistral-7B-Instruct free tier) |
-| Knowledge Context | Local JSON (no vector DB needed) |
-| Frontend | Vanilla HTML/CSS/JS |
-| Deployment | Render (free tier) |
+| Probability | Risk Level | Decision |
+|-------------|------------|---------|
+| 0% – 40% | Low Risk | APPROVE |
+| 40% – 70% | Medium Risk | REVIEW |
+| 70% – 100% | High Risk | REJECT |
