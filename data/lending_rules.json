@@ -1,0 +1,109 @@
+{
+  "version": "1.0",
+  "description": "Lending guidelines and financial regulations for credit risk decision support",
+
+  "risk_thresholds": {
+    "low_risk":    { "max_probability": 0.40, "label": "Low Risk",    "decision": "Approve" },
+    "medium_risk": { "max_probability": 0.70, "label": "Medium Risk", "decision": "Review"  },
+    "high_risk":   { "min_probability": 0.70, "label": "High Risk",   "decision": "Reject"  }
+  },
+
+  "approval_criteria": {
+    "strong_positive_indicators": [
+      "Default probability below 20%",
+      "Debt-to-income ratio below 0.35",
+      "No late payments in the past 2 years",
+      "Stable monthly income above $3,000",
+      "Revolving credit utilization below 30%",
+      "Fewer than 5 open credit lines (manageable)"
+    ],
+    "auto_approve_threshold": {
+      "max_default_probability": 0.15,
+      "max_debt_ratio": 0.30,
+      "max_late_payments_total": 0,
+      "min_monthly_income": 4000
+    }
+  },
+
+  "rejection_criteria": {
+    "strong_negative_indicators": [
+      "Default probability above 70%",
+      "Three or more 90+ day delinquencies in past 2 years",
+      "Revolving credit utilization above 90%",
+      "Debt-to-income ratio above 0.80",
+      "Evidence of chronic payment difficulties"
+    ],
+    "auto_reject_threshold": {
+      "min_default_probability": 0.75,
+      "min_late_90_days": 3
+    }
+  },
+
+  "risk_mitigation_options": {
+    "medium_risk": [
+      "Request additional income documentation (pay stubs, tax returns)",
+      "Reduce requested loan amount by 20-30%",
+      "Require a co-signer or guarantor with strong credit",
+      "Offer a secured loan option with collateral",
+      "Apply a risk-adjusted interest rate to compensate for elevated risk",
+      "Require proof of stable employment for at least 12 months"
+    ],
+    "high_risk": [
+      "Refer borrower to a certified credit counseling service",
+      "Suggest debt consolidation program before reapplying in 6-12 months",
+      "Recommend a secured credit-builder product to improve credit score",
+      "Advise borrower to reduce existing debt load before reapplying",
+      "Consider offering a small secured product as a stepping stone"
+    ]
+  },
+
+  "debt_ratio_guidelines": {
+    "excellent":   { "range": "0.00 - 0.20", "assessment": "Excellent financial position, low debt burden" },
+    "good":        { "range": "0.20 - 0.35", "assessment": "Good - manageable debt load relative to income" },
+    "acceptable":  { "range": "0.35 - 0.50", "assessment": "Acceptable - proceed with standard caution" },
+    "concerning":  { "range": "0.50 - 0.70", "assessment": "Concerning - high debt burden, increased default risk" },
+    "critical":    { "range": "0.70+",        "assessment": "Critical - borrower likely struggling with existing obligations" }
+  },
+
+  "revolving_utilization_guidelines": {
+    "optimal":    { "range": "0% - 30%",  "assessment": "Optimal credit management" },
+    "moderate":   { "range": "30% - 60%", "assessment": "Moderate utilization, acceptable" },
+    "high":       { "range": "60% - 90%", "assessment": "High utilization, may indicate financial stress" },
+    "critical":   { "range": "90%+",      "assessment": "Critical - maxed out credit, major risk factor" }
+  },
+
+  "regulatory_references": [
+    {
+      "name": "Equal Credit Opportunity Act (ECOA) - Regulation B",
+      "description": "Prohibits credit discrimination based on race, color, religion, national origin, sex, marital status, age, or receipt of public assistance. All credit decisions must be based solely on creditworthiness factors."
+    },
+    {
+      "name": "Fair Credit Reporting Act (FCRA)",
+      "description": "Governs the collection, dissemination, and use of consumer credit information. Requires lenders to inform applicants when adverse action is taken based on credit reports."
+    },
+    {
+      "name": "Truth in Lending Act (TILA) - Regulation Z",
+      "description": "Mandates clear disclosure of loan terms, costs, and annual percentage rate (APR) to protect consumers from predatory lending."
+    },
+    {
+      "name": "Fair Housing Act (FHA)",
+      "description": "Prohibits discrimination in residential real estate lending transactions. Applies to mortgage loans and home equity products."
+    },
+    {
+      "name": "Community Reinvestment Act (CRA)",
+      "description": "Encourages financial institutions to meet the credit needs of all communities, including low- and moderate-income neighborhoods."
+    },
+    {
+      "name": "Dodd-Frank Wall Street Reform Act",
+      "description": "Established the Consumer Financial Protection Bureau (CFPB) and introduced rules to prevent unfair, deceptive, or abusive lending practices."
+    }
+  ],
+
+  "general_lending_principles": [
+    "Lenders must assess a borrower's ability-to-repay based on verified income, assets, and debt obligations",
+    "Credit decisions must be documented with clear, objective, and non-discriminatory rationale",
+    "Adverse action notices must be provided within 30 days of a credit denial",
+    "All data used in credit decisions must comply with applicable privacy and data protection laws",
+    "Risk-based pricing must be applied consistently and transparently across all applicants"
+  ]
+}
