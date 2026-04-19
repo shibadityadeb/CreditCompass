@@ -1,1 +1,1 @@
-# Backend package for CreditCompass
+# Backend package
