@@ -14,7 +14,7 @@ A college major project: ML credit risk scoring (Milestone 1) + Agentic AI lendi
 
 ## ROC Curve Comparison (Model Performance)
 
-<!-- Add the third ROC curve image URL here once shared -->
+![ROC Curve Comparison (Model Performance)](https://github.com/user-attachments/assets/0b3c88ff-42c2-4ae6-99c6-38b8285ebcde)
 
 ---
 
