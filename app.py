@@ -1,3 +1,8 @@
+"""
+CreditCompass - Flask REST API
+Milestone 1: /predict endpoint (ML credit risk scoring)
+Milestone 2: /assess endpoint (Agentic AI lending decision support)
+"""
 import os
 import logging
 from flask import Flask, request, jsonify, render_template
@@ -5,6 +10,12 @@ from flask_cors import CORS
 import pandas as pd
 import joblib
 import numpy as np
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -129,6 +140,110 @@ def get_features():
         'features': FEATURE_CONFIG
     })
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Milestone 2: Agentic AI Lending Decision Support
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Lazy-load the agent so it does not slow down startup if langgraph is missing
+_agent_loaded = False
+_run_assessment = None
+
+def _get_agent():
+    """Import and cache the LangGraph agent (loaded on first use)."""
+    global _agent_loaded, _run_assessment
+    if not _agent_loaded:
+        try:
+            from backend.agent import run_assessment
+            _run_assessment = run_assessment
+            logger.info("LangGraph agent loaded successfully.")
+        except Exception as e:
+            logger.error(f"Failed to load agent: {e}")
+            _run_assessment = None
+        _agent_loaded = True
+    return _run_assessment
+
+
+@app.route('/assess', methods=['POST'])
+def assess():
+    """
+    Milestone 2 endpoint: Agentic AI lending decision support.
+
+    Accepts the same borrower fields as /predict (all optional — missing
+    fields are handled gracefully by the agent).
+
+    Returns a structured JSON report containing:
+      - ml_prediction:  XGBoost model result
+      - recommendation: Full AI lending assessment with sections:
+          borrower_summary, credit_risk_analysis, lending_decision,
+          decision_rationale, risk_mitigation_suggestions,
+          regulatory_references, disclaimer
+      - missing_fields: List of absent fields (if any)
+    """
+    run_assessment = _get_agent()
+
+    if run_assessment is None:
+        return jsonify({
+            'success': False,
+            'error': 'AI assessment service is temporarily unavailable. Please try again later.'
+        }), 503
+
+    data = request.get_json()
+    if not data:
+        return jsonify({
+            'success': False,
+            'error': 'No input data provided.'
+        }), 400
+
+    # Sanitize each field — treat empty strings as None (missing)
+    borrower_data = {}
+    for feature, config in FEATURE_CONFIG.items():
+        value = data.get(feature)
+        if value is None or value == '':
+            borrower_data[feature] = None
+        else:
+            try:
+                borrower_data[feature] = config['type'](float(value))
+            except (ValueError, TypeError):
+                borrower_data[feature] = None  # treat bad values as missing
+
+    try:
+        logger.info("Running AI lending assessment via LangGraph agent...")
+        result = run_assessment(borrower_data)
+
+        ml = result.get('ml_prediction', {})
+        rec = result.get('recommendation', {})
+        missing = result.get('missing_fields', [])
+
+        return jsonify({
+            'success': True,
+            'ml_prediction': {
+                'probability':     ml.get('probability', 0),
+                'probability_pct': ml.get('probability_pct', 0),
+                'risk_level':      ml.get('risk_level', 'Unknown'),
+                'risk_class':      ml.get('risk_class', 'medium'),
+                'used_defaults':   ml.get('used_defaults', []),
+            },
+            'recommendation': {
+                'borrower_summary':           rec.get('borrower_summary', ''),
+                'credit_risk_analysis':       rec.get('credit_risk_analysis', ''),
+                'lending_decision':           rec.get('lending_decision', 'REVIEW'),
+                'decision_rationale':         rec.get('decision_rationale', ''),
+                'risk_mitigation_suggestions': rec.get('risk_mitigation_suggestions', ''),
+                'regulatory_references':      rec.get('regulatory_references', ''),
+                'disclaimer':                 rec.get('disclaimer', ''),
+            },
+            'missing_fields': missing,
+        })
+
+    except Exception as e:
+        logger.error(f"Assessment error: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Assessment failed. Please try again.'
+        }), 500
+
+
+# Error handlers
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'success': False, 'error': 'Endpoint not found'}), 404
