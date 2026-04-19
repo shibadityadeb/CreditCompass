@@ -4,6 +4,8 @@ A college major project: ML credit risk scoring (Milestone 1) + Agentic AI lendi
 
 **Stack:** Flask · XGBoost · LangGraph · OpenRouter (Mistral-7B free) · Tailwind CSS · Render
 
+**Project Report (PDF):** [reports/CreditCompass.pdf](reports/CreditCompass.pdf)
+
 ---
 
 ## How the Data Flows
