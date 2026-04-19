@@ -168,7 +168,15 @@ Start command (in `render.yaml`):
 gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 2
 ```
 
----
+**Or deploy via Dashboard:**
+1. Go to [Vercel](https://vercel.com)
+2. Click **Add New** → **Project**
+3. Import your GitHub repository
+4. Vercel auto-detects `vercel.json`
+5. Click **Deploy**
+
+> **Note**: Vercel free tier has 100GB bandwidth/month and 10-second function timeout.
+
 
 ## Input Features
 
