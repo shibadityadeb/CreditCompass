@@ -705,6 +705,391 @@ body {
     text-align: center;
     border-top: 1px solid var(--border-color);
     background: #ffffff;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: var(--font-size-sm);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--font-size-base);
+    }
+    
+    .card-header {
+        padding: var(--spacing-md);
+    }
+    
+    .form {
+        padding: var(--spacing-md);
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .logo-text {
+        font-size: var(--font-size-lg);
+    }
+    
+    .nav-status {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-success {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Focus Visible for Accessibility */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
+   Milestone 2: AI Lending Assessment Report Styles
+   ========================================================================== */
+
+/* AI Assessment Button - appears after ML result */
+.ai-assess-btn-wrapper {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+}
+
+.btn-ai {
+    color: var(--text-inverse);
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+    width: 100%;
+}
+
+.btn-ai:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+}
+
+/* AI Report Card - full-width below dashboard */
+.ai-report-section {
+    margin-top: var(--spacing-xl);
+}
+
+.ai-report-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl), 0 0 40px rgba(124, 58, 237, 0.15);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.ai-card-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    border-bottom: 1px solid #ddd6fe;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.ai-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: #5b21b6;
+}
+
+.ai-card-icon {
+    width: 24px;
+    height: 24px;
+    color: #7c3aed;
+}
+
+.ai-card-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Decision Banner */
+.decision-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.decision-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.decision-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-xl);
+    border-radius: var(--border-radius-xl);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.decision-badge.approve {
+    background: var(--color-success-light);
+    color: #065f46;
+    border: 2px solid #6ee7b7;
+}
+
+.decision-badge.review {
+    background: var(--color-warning-light);
+    color: #78350f;
+    border: 2px solid #fcd34d;
+}
+
+.decision-badge.reject {
+    background: var(--color-danger-light);
+    color: #7f1d1d;
+    border: 2px solid #fca5a5;
+}
+
+.decision-icon {
+    font-size: var(--font-size-xl);
+}
+
+/* Missing Data Alert */
+.missing-data-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: #fffbeb;
+    border-left: 4px solid var(--color-warning);
+    margin: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--border-radius-sm);
+}
+
+.alert-icon {
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+}
+
+.alert-text {
+    font-size: var(--font-size-sm);
+    color: #78350f;
+}
+
+.alert-text strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* Report Sections Grid */
+.report-body {
+    padding: var(--spacing-xl);
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.report-section {
+    background: var(--bg-input);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    border-left: 3px solid var(--color-primary-light);
+}
+
+.report-section.full-width {
+    grid-column: 1 / -1;
+    border-left-color: #a78bfa;
+}
+
+.report-section.disclaimer-section {
+    grid-column: 1 / -1;
+    border-left-color: var(--color-secondary);
+    background: #f8fafc;
+}
+
+.report-section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-icon {
+    font-size: var(--font-size-base);
+}
+
+.report-section-content {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+.disclaimer-section .report-section-content {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* AI Loading State */
+.ai-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2xl);
+    gap: var(--spacing-lg);
+}
+
+.ai-loading-spinner {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.ai-loading-spinner .spinner-ring:nth-child(1) { border-top-color: #7c3aed; }
+.ai-loading-spinner .spinner-ring:nth-child(2) { border-right-color: #a78bfa; }
+.ai-loading-spinner .spinner-ring:nth-child(3) { border-bottom-color: #c4b5fd; }
+
+.ai-loading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    text-align: left;
+}
+
+.ai-step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    transition: color var(--transition-normal);
+}
+
+.ai-step.active {
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+.ai-step.done {
+    color: var(--color-success);
+}
+
+.step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-color);
+    flex-shrink: 0;
+}
+
+.ai-step.active .step-dot { background: #7c3aed; animation: pulse 1s infinite; }
+.ai-step.done  .step-dot  { background: var(--color-success); }
+
+/* Report Actions */
+.report-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Print Styles */
+@media print {
+    .background-overlay,
+    .header,
+    .footer,
+    .form-actions,
+    .result-actions,
+    .info-section {
+        display: none;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+>>>>>>> 9ed135a (feat: update app)
 }

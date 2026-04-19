@@ -16,5 +16,7 @@ services:
         value: False
       - key: MODEL_PATH
         value: xgb_credit_model.pkl
+      - key: OPENROUTER_API_KEY
+        sync: false   # Set manually in Render dashboard — keep secret
     healthCheckPath: /health
     autoDeploy: true
